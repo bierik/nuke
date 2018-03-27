@@ -1,0 +1,46 @@
+{
+  "name": "nuke",
+  "version": "1.0.0",
+  "description": "Visualisation project for FHNW",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "serve": "webpack-dev-server --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bierik/nuke.git"
+  },
+  "author": "Kevin Bieri, Robin Christen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bierik/nuke/issues"
+  },
+  "homepage": "https://github.com/bierik/nuke#readme",
+  "engines": {
+    "node": ">= 9.0.0",
+    "npm": ">= 5.0.0"
+  },
+  "dependencies": {
+    "d3": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-import-resolver-webpack": "^0.8.4",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.1.0",
+    "mini-css-extract-plugin": "^0.2.0",
+    "webpack": "^4.3.0",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
