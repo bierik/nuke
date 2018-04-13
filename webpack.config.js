@@ -7,6 +7,7 @@ module.exports = {
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '~': path.resolve(__dirname, 'node_modules'),
     },
     extensions: ['*', '.js'],
   },
@@ -22,8 +23,12 @@ module.exports = {
         ],
       },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.js$/,
