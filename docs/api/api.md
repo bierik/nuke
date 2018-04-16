@@ -7,8 +7,8 @@
   {
     time: 1523361684246, // Timestamp
     country: "USA", // Maps to a enumeration [USA, RUS, GBR, FRA, CHN, IND, PAK, PRK] in iso country codes
-    lat: "20.77000", // Needs to be converted to y-coordinates
-    long: "55.00000", // Needs to be converted to x-coordinates
+    latitude: "20.77000", // Needs to be converted to y-coordinates
+    longitude: "55.00000", // Needs to be converted to x-coordinates
     yield: 23, // In kilotons
   }
 ]

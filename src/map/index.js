@@ -5,12 +5,13 @@ import * as d3 from 'd3';
 
 mapbox.accessToken = 'pk.eyJ1IjoiYmllcmlrIiwiYSI6ImNqZno0MWl0bjN0aDIzNHBkdmJteXJnbzIifQ.Zu6EhGsMcYvdXbjO3LJaHA';
 
-const yieldMapper = mapRange(x => x, 0, 100, 1, 6);
+const yieldMapper = mapRange(x => x, 0, 85000, 1, 6);
 
 function createTranslation(data, projection) {
-  const long = Number.parseFloat(data.long, 10);
-  const lat = Number.parseFloat(data.lat, 10);
-  const [x, y] = projection([long, lat]);
+  console.log(Number.parseFloat(data.longitude, 10));
+  const longitude = Number.parseFloat(data.longitude, 10);
+  const latitude = Number.parseFloat(data.latitude, 10);
+  const [x, y] = projection([longitude, latitude]);
   return `translate(${x}, ${y})`;
 }
 
