@@ -4,7 +4,7 @@
   "description": "Visualisation project for FHNW",
   "main": "src/index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack --mode production --env.production",
     "serve": "webpack-dev-server --progress --mode development"
   },
   "repository": {
