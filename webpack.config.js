@@ -1,9 +1,10 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
 
-
-module.exports = {
+module.exports = env => ({
+  entry: ['babel-polyfill', path.resolve(__dirname, 'src/index.js')],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -24,19 +25,16 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          'babel-loader',
-          'eslint-loader',
-        ],
+        use: ['babel-loader', 'eslint-loader'],
       },
     ],
   },
@@ -49,6 +47,10 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'DEBUG']),
+    new webpack.DefinePlugin({
+      'process.env.API_ROOT': JSON.stringify(env && env.production ? 'http://nuke.ch' : 'http://localhost:8080'),
+    }),
   ],
   devtool: '#eval-source-map',
-};
+});
