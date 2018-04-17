@@ -1,6 +1,6 @@
 import '~/normalize.css/normalize.css';
 import '~/flexboxgrid-sass/flexboxgrid.scss';
-import '@/layout.scss';
+import 'assets/layout.scss';
 import '~/mapbox-gl/dist/mapbox-gl.css';
 import Map from '@/map';
 import { loadNukeData } from '@/api';

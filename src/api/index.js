@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import joinurl from 'url-join';
 
 const { API_ROOT } = process.env;
-const NUKE_FILE = 'resources/data.csv';
+const NUKE_FILE = 'assets/data.csv';
 
 export function createAPILink(path) { return joinurl(API_ROOT, path); }
 
