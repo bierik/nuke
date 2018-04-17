@@ -9,6 +9,7 @@ module.exports = env => ({
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '~': path.resolve(__dirname, 'node_modules'),
+      assets: path.resolve(__dirname, 'src/assets'),
     },
     extensions: ['*', '.js'],
   },
@@ -47,10 +48,12 @@ module.exports = env => ({
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    new webpack.EnvironmentPlugin(['NODE_ENV', 'DEBUG']),
     new webpack.DefinePlugin({
       'process.env.API_ROOT': JSON.stringify(env && env.production ? 'http://nuke.ch' : 'http://localhost:8080'),
     }),
   ],
   devtool: '#eval-source-map',
+  devServer: {
+    contentBase: path.resolve(__dirname, 'src'),
+  },
 });
