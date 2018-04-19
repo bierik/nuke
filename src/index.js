@@ -5,11 +5,13 @@ import '~/mapbox-gl/dist/mapbox-gl.css';
 import { renderPoints, createMap } from '@/map';
 import { loadNukeData } from '@/api';
 import { tick } from '@/utils';
-
+import renderHistogram from '@/histogram';
 
 (async () => {
   const data = await loadNukeData();
   const [map, layer] = createMap('map');
+
+  renderHistogram(data);
 
   let i = 0;
   const ticker = tick(() => {
