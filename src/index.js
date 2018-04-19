@@ -3,19 +3,22 @@ import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
 import '~/mapbox-gl/dist/mapbox-gl.css';
 import { renderPoints, createMap } from '@/map';
-import { loadNukeData } from '@/api';
+import { loadNukeData, loadMilitaryData } from '@/api';
 import { tick } from '@/utils';
 import renderHistogram from '@/histogram';
+import renderMilitaryExpenditures from '@/line-chart';
 
 (async () => {
-  const data = await loadNukeData();
+  const nukeData = await loadNukeData();
+  const militaryData = await loadMilitaryData();
   const [map, layer] = createMap('map');
 
-  renderHistogram(data);
+  renderHistogram(nukeData);
+  renderMilitaryExpenditures(militaryData);
 
   let i = 0;
   const ticker = tick(() => {
-    renderPoints(map, layer, [data[i]]);
+    renderPoints(map, layer, [nukeData[i]]);
     i += 1;
   }, 100);
   ticker.start();
