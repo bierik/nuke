@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 const svgWidth = 1600;
 const svgHeight = 500;
 
-const svg = d3.select('svg')
+const svg = d3.select('#histogram')
   .attr('width', svgWidth)
   .attr('height', svgHeight);
 
@@ -27,10 +27,10 @@ const z = d3.scaleOrdinal()
     '#F7BC47', '#F23C18', '#35BFCC', '#0C1519']);
 
 export default function renderHistogram(data) {
-  const keys = data.map(d => d.country)
+  const countries = data.map(d => d.country)
     .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
 
-  const nukeData = Object.values(data.reduce((acc, current) => {
+  const histogramData = Object.values(data.reduce((acc, current) => {
     const year = new Date(Number.parseInt(current.time, 10)).getFullYear();
 
     acc[year] = acc[year] || { year };
@@ -40,14 +40,14 @@ export default function renderHistogram(data) {
     return acc;
   }, {}));
 
-  x.domain(nukeData.map(d => d.year));
-  y.domain([0, d3.max(nukeData, d => d.total)]).nice();
-  z.domain(keys);
+  x.domain(histogramData.map(d => d.year));
+  y.domain([0, d3.max(histogramData, d => d.total)]).nice();
+  z.domain(countries);
 
   // stacked bars
   g.append('g')
     .selectAll('g')
-    .data(d3.stack().keys(keys)(nukeData))
+    .data(d3.stack().keys(countries)(histogramData))
     .enter()
     .append('g')
     .attr('fill', d => z(d.key))
@@ -59,7 +59,6 @@ export default function renderHistogram(data) {
     .attr('y', d => y(d[1]) || 0)
     .attr('height', d => y(d[0]) - y(d[1]) || 0)
     .attr('width', x.bandwidth());
-
 
   // x-axis
   g.append('g')
@@ -80,7 +79,7 @@ export default function renderHistogram(data) {
     .attr('font-size', 10)
     .attr('text-anchor', 'end')
     .selectAll('g')
-    .data(keys.slice().reverse())
+    .data(countries.slice().reverse())
     .enter()
     .append('g')
     .attr('transform', (d, i) => `translate(0,${20 * i})`);
