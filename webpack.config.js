@@ -55,5 +55,6 @@ module.exports = env => ({
   devtool: '#eval-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, 'src'),
+    stats: 'errors-only',
   },
 });
