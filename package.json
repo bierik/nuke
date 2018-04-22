@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Visualisation project for FHNW",
   "main": "src/index.js",
+  "license": "MIT",
   "scripts": {
     "build": "webpack --mode production --env.production",
     "serve": "webpack-dev-server --progress --mode development"
@@ -12,7 +13,6 @@
     "url": "git+https://github.com/bierik/nuke.git"
   },
   "author": "Kevin Bieri, Robin Christen",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/bierik/nuke/issues"
   },

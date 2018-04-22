@@ -17,7 +17,7 @@ module.exports = {
   rules: {
     'import/extensions': ['error', 'always', {
       js: 'never',
-      vue: 'never',
     }],
+    'import/prefer-default-export': 0,
   },
 };

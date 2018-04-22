@@ -2,21 +2,18 @@ import '~/normalize.css/normalize.css';
 import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
 import '~/mapbox-gl/dist/mapbox-gl.css';
-import { renderPoints, createMap } from '@/map';
+import { renderPoints, createMap, sortByTime } from '@/map';
 import { loadNukeData } from '@/api';
-import { tick } from '@/utils';
 import renderHistogram from '@/histogram';
+import { createSimulation } from '@/simulation';
+
 
 (async () => {
-  const data = await loadNukeData();
+  const data = sortByTime(await loadNukeData());
   const [map, layer] = createMap('map');
-
   renderHistogram(data);
-
-  let i = 0;
-  const ticker = tick(() => {
-    renderPoints(map, layer, [data[i]]);
-    i += 1;
-  }, 100);
-  ticker.start();
+  const simulation = createSimulation(data, (points) => {
+    renderPoints(map, layer, points);
+  });
+  map.on('load', simulation.start);
 })();

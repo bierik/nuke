@@ -1,6 +1,7 @@
 import mapbox from 'mapbox-gl';
 import mapRange from 'map-range';
 import * as d3 from 'd3';
+import { getColor } from '@/map';
 
 
 mapbox.accessToken = 'pk.eyJ1IjoiYmllcmlrIiwiYSI6ImNqZno0MWl0bjN0aDIzNHBkdmJteXJnbzIifQ.Zu6EhGsMcYvdXbjO3LJaHA';
@@ -15,6 +16,7 @@ function createTranslation(data, projection) {
 }
 
 function calcProjection(map) {
+  // eslint-disable-next-line no-underscore-dangle
   const bbox = map._container.getBoundingClientRect();
   const center = map.getCenter();
   const zoom = map.getZoom();
@@ -31,23 +33,20 @@ export function renderPoints(map, layer, points) {
 
   layer
     .selectAll('circle.dot')
-    .transition()
-    .duration(50)
-    .attr('r', 0)
-    .remove();
-
-  layer
-    .selectAll('circle.dot')
     .data(points)
     .enter()
     .append('circle')
     .classed('dot', true)
-    .attr('fill', 'red')
+    .attr('fill', d => getColor(d.country))
     .attr('transform', d => createTranslation(d, projection))
     .attr('r', 0)
     .transition()
+    .duration(300)
+    .attr('r', d => yieldMapper(d.yield))
+    .transition()
     .duration(100)
-    .attr('r', d => yieldMapper(d.yield));
+    .attr('r', 0)
+    .remove();
 }
 
 function adjustPosition(layer, map) {
@@ -60,7 +59,7 @@ function adjustPosition(layer, map) {
 export function createMap(target) {
   const map = new mapbox.Map({
     container: target,
-    style: 'mapbox://styles/mapbox/dark-v9',
+    style: 'mapbox://styles/mapbox/light-v9',
     center: [0, 0],
     zoom: 1,
     interactive: false,
