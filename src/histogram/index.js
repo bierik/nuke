@@ -14,10 +14,8 @@ const width = svgWidth - margin.left - margin.right;
 const height = svgHeight - margin.top - margin.bottom;
 const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-const x = d3.scaleBand()
-  .rangeRound([0, width])
-  .paddingInner(0.05)
-  .align(0.1);
+const x = d3.scaleTime()
+  .rangeRound([0, width]);
 
 const y = d3.scaleLinear()
   .rangeRound([height, 0]);
@@ -31,7 +29,8 @@ export default function renderHistogram(data) {
     .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
 
   const histogramData = Object.values(data.reduce((acc, current) => {
-    const year = new Date(Number.parseInt(current.time, 10)).getFullYear();
+    let year = new Date(Number.parseInt(current.time, 10)).getFullYear();
+    year = d3.timeParse('%Y')(year);
 
     acc[year] = acc[year] || { year };
     acc[year][current.country] = (acc[year][current.country] || 0) + 1;
@@ -40,7 +39,7 @@ export default function renderHistogram(data) {
     return acc;
   }, {}));
 
-  x.domain(histogramData.map(d => d.year));
+  x.domain(d3.extent(histogramData, d => d.year));
   y.domain([0, d3.max(histogramData, d => d.total)]).nice();
   z.domain(countries);
 
@@ -58,14 +57,13 @@ export default function renderHistogram(data) {
     .attr('x', d => x(d.data.year))
     .attr('y', d => y(d[1]) || 0)
     .attr('height', d => y(d[0]) - y(d[1]) || 0)
-    .attr('width', x.bandwidth());
+    .attr('width', 20);
 
   // x-axis
   g.append('g')
-    .attr('class', 'axis')
     .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x))
-    .select('.domain')
+    .call(d3.axisBottom(x)) // use .tick(value) to control the ticks..
+    .select('.domain') // remove the lines...
     .remove();
 
   // y-axis
