@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { getColor } from '@/map';
 
 const svgWidth = 1600;
 const svgHeight = 500;
@@ -20,10 +21,6 @@ const x = d3.scaleTime()
 const y = d3.scaleLinear()
   .rangeRound([height, 0]);
 
-const z = d3.scaleOrdinal()
-  .range(['#2D7DD2', '#97CC04', '#FFD400', '#F45D01',
-    '#F7BC47', '#F23C18', '#35BFCC', '#0C1519']);
-
 export default function renderHistogram(data) {
   const countries = data.map(d => d.country)
     .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
@@ -41,7 +38,6 @@ export default function renderHistogram(data) {
 
   x.domain(d3.extent(histogramData, d => d.year));
   y.domain([0, d3.max(histogramData, d => d.total)]).nice();
-  z.domain(countries);
 
   // stacked bars
   g.append('g')
@@ -49,7 +45,7 @@ export default function renderHistogram(data) {
     .data(d3.stack().keys(countries)(histogramData))
     .enter()
     .append('g')
-    .attr('fill', d => z(d.key))
+    .attr('fill', d => getColor(d.key))
     .selectAll('rect')
     .data(d => d)
     .enter()
@@ -86,7 +82,7 @@ export default function renderHistogram(data) {
     .attr('x', width - 19)
     .attr('width', 19)
     .attr('height', 19)
-    .attr('fill', z);
+    .attr('fill', getColor);
 
   legend.append('text')
     .attr('x', width - 24)
