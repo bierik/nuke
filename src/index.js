@@ -15,10 +15,9 @@ import { createSimulation } from '@/simulation';
 
   renderHistogram(nukeData);
   renderMilitaryExpenditures(militaryData);
- 
+
   const simulation = createSimulation(nukeData, (points) => {
     renderPoints(map, layer, points);
   });
   map.on('load', simulation.start);
- 
 })();
