@@ -8,7 +8,7 @@ const svg = d3.select('#histogram')
   .attr('height', svgHeight);
 
 const margin = {
-  top: 20, right: 20, bottom: 30, left: 50,
+  top: 20, right: 20, bottom: 30, left: 100,
 };
 const width = svgWidth - margin.left - margin.right;
 const height = svgHeight - margin.top - margin.bottom;
