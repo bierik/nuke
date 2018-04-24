@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { getColor } from '@/map';
 
 const svgWidth = 1600;
 const svgHeight = 500;
@@ -30,7 +31,7 @@ function drawLine(data) {
   g.append('path')
     .datum(data)
     .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
+    .attr('stroke', getColor(data[0].country))
     .attr('stroke-linejoin', 'round')
     .attr('stroke-linecap', 'round')
     .attr('stroke-width', 1.5)
