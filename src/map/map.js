@@ -2,11 +2,12 @@ import mapbox from 'mapbox-gl';
 import mapRange from 'map-range';
 import * as d3 from 'd3';
 import { getColor } from '@/map';
+import { mapStyle, mapCenter, mapZoom, mapAccessToken } from '@/config';
 
 
-mapbox.accessToken = 'pk.eyJ1IjoiYmllcmlrIiwiYSI6ImNqZno0MWl0bjN0aDIzNHBkdmJteXJnbzIifQ.Zu6EhGsMcYvdXbjO3LJaHA';
+mapbox.accessToken = mapAccessToken;
 
-const yieldMapper = mapRange(x => x, 0, 85000, 10, 20);
+const yieldMapper = mapRange(x => x, 0, 58000, 10, 300);
 
 function createTranslation(data, projection) {
   const longitude = Number.parseFloat(data.longitude, 10);
@@ -41,11 +42,9 @@ export function renderPoints(map, layer, points) {
     .attr('transform', d => createTranslation(d, projection))
     .attr('r', 0)
     .transition()
-    .duration(300)
-    .attr('r', d => yieldMapper(d.yield))
-    .transition()
-    .duration(100)
-    .attr('r', 0)
+    .duration(1000)
+    .style('opacity', 0)
+    .attr('r', d => yieldMapper(d.yield) * 4)
     .remove();
 }
 
@@ -59,9 +58,9 @@ function adjustPosition(layer, map) {
 export function createMap(target) {
   const map = new mapbox.Map({
     container: target,
-    style: 'mapbox://styles/mapbox/light-v9',
-    center: [0, 0],
-    zoom: 1,
+    style: mapStyle,
+    center: mapCenter,
+    zoom: mapZoom,
     interactive: false,
   });
 
