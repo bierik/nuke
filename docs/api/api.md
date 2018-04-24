@@ -14,14 +14,17 @@
 ]
 ```
 
-## Military Expenses
+## National Material
 
 ``` javascript
 [
   {
     country: "USA", // Maps to a enumeration [USA, RUS, GBR, FRA, CHN, IND, PAK, PRK] in iso country codes
-    amount: 220000000000,
     year: 2003,
+    militaryExpenditures: 265480000, // thousends in USD
+    militaryPersonnel: 2269 // thousands
+    energyConsumption: 2468629 // thousands of coal-ton equivalents
+    population: 240651 // thousends
   }
 ]
 ```
