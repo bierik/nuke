@@ -1,7 +1,8 @@
 import { now } from '@/utils';
+import { defaultInterval } from '@/config';
 
 
-export function createTicker(callback, { init = false, initValue = null, interval = 1000 } = {}) {
+export function createTicker(callback, { init = false, initValue = null, interval = defaultInterval } = {}) {
   let running = init;
   let returnValue = initValue;
 
