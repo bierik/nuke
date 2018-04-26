@@ -53,7 +53,7 @@ export function Histogram(store) {
       .data(d => d)
       .enter()
       .append('rect')
-      .attr('opacity', (d) => {
+      .style('opacity', (d) => {
         // thanks to (stupid) linter: (d => d.data.year > currentYear ? 0.3 : 1) not allowed
         let opacity = 1;
         if (d.data.year > currentYear) {
@@ -127,15 +127,16 @@ export function Histogram(store) {
       .x(d => x(d.year))
       .y(d => y(d.militaryExpenditures));
 
-    const drawLine = (data) => {
+    const drawLine = (data, opacity = 1) => {
       // line data values
       g.append('path')
         .datum(data)
         .attr('fill', 'none')
-        .attr('stroke', 'steelblue')
+        .attr('stroke', getColor(data[0].country))
+        .attr('opacity', opacity)
         .attr('stroke-linejoin', 'round')
         .attr('stroke-linecap', 'round')
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 3)
         .attr('d', line); // define d3 line function and use it here..
     };
 
@@ -158,7 +159,16 @@ export function Histogram(store) {
       .attr('text-anchor', 'end')
       .text('Price ($)');
 
-    militaryExpensesPerCountry.map(d => drawLine(d));
+    militaryExpensesPerCountry.forEach((country) => {
+      let data = country.filter(expense => expense.year >= currentYear);
+      if (data.length) {
+        drawLine(data, 0.3);
+      }
+      data = country.filter(expense => expense.year <= currentYear);
+      if (data.length) {
+        drawLine(data);
+      }
+    });
   }
 
   function render() {
