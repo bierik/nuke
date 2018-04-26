@@ -29,11 +29,17 @@ export async function Store() {
 
   // get military expenses per country and year: [ {year: 1945, country: USA, expenses: 580 },  ...]
   function getMilitaryExpenses() {
-    return militaryData.map((d) => {
-      const year = yearToD3Time(d.year);
-      const militaryExpenditures = Number.parseInt(d.militaryExpenditures, 10); // parse to int
-      return Object.assign(d, { year, militaryExpenditures });
-    });
+    return militaryData.reduce((acc, current) => {
+      const data = {};
+
+      data.country = current.country;
+      data.year = yearToD3Time(current.year);
+      data.militaryExpenditures = Number.parseInt(current.militaryExpenditures, 10);
+
+      acc.push(data);
+
+      return acc;
+    }, []);
   }
 
   /*
@@ -44,7 +50,7 @@ export async function Store() {
   ]
   */
   function getMilitaryExpensesPerCountry() {
-    return Object.values(militaryData.reduce((acc, current) => {
+    return Object.values(getMilitaryExpenses().reduce((acc, current) => {
       acc[current.country] = acc[current.country] || [];
       acc[current.country].push(current);
       return acc;

@@ -2,9 +2,8 @@ import '~/normalize.css/normalize.css';
 import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
 import '~/mapbox-gl/dist/mapbox-gl.css';
-import { renderPoints, createMap} from '@/map';
+import { renderPoints, createMap } from '@/map';
 import { Histogram } from '@/histogram';
-import renderMilitaryExpenditures from '@/line-chart';
 import { createSimulation } from '@/simulation';
 import { createTimeline } from '@/timeline';
 import { createProgress } from '@/progress';
@@ -17,8 +16,8 @@ import { Store } from '@/api/store';
   // Initialize store
   const store = await Store();
 
-  // const playBoom = throttle(() => play(store.getBackgroundMusic()), 1);
-  
+  const playBoom = throttle(() => play(store.getBackgroundMusic()), 1);
+ 
   const margin = {
     top: 0, right: 50, bottom: 0, left: 50,
   };
@@ -51,11 +50,9 @@ import { Store } from '@/api/store';
     histogram.render();
   });
 
-  // renderMilitaryExpenditures(store);
-
   // Start simulation when map is loaded
   map.on('load', () => {
-    // play(store.getBackgroundMusic());
+    play(store.getBackgroundMusic());
     simulation.start();
   });
 
