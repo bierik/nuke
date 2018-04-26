@@ -2,62 +2,63 @@ import '~/normalize.css/normalize.css';
 import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
 import '~/mapbox-gl/dist/mapbox-gl.css';
-import { renderPoints, createMap, sortByTime } from '@/map';
-import { loadNukeData, loadMilitaryData } from '@/api';
-import renderHistogram from '@/histogram';
-import renderMilitaryExpenditures from '@/line-chart';
+import { renderPoints, createMap } from '@/map';
+import { Histogram } from '@/histogram';
 import { createSimulation } from '@/simulation';
 import { createTimeline } from '@/timeline';
 import { createProgress } from '@/progress';
-import { onResize } from '@/utils';
-import { load, play } from '@/audio';
+import { onResize, getYear } from '@/utils';
+import { play } from '@/api/audio';
 import throttle from 'lodash.throttle';
-
-const PLAYBACK_FILE = 'assets/background.mp3';
-const BOOM_FILE = 'assets/boom.mp3';
-
+import { Store } from '@/api/store';
 
 (async () => {
-  // Load Data
-  const nukeData = sortByTime(await loadNukeData());
-  const militaryData = await loadMilitaryData();
-  // const audio = await loadPlayback();
-  const boom = await load(BOOM_FILE);
-  const background = await load(PLAYBACK_FILE);
-  const playBoom = throttle(() => play(boom), 1);
+  // Initialize store
+  const store = await Store();
 
+  const playBoom = throttle(() => play(store.getBackgroundMusic()), 1);
+ 
   const margin = {
-    top: 0, right: 20, bottom: 0, left: 20,
+    top: 0, right: 50, bottom: 0, left: 50,
   };
-
-  // Initialize progressbar
-  const progressbar = createProgress(document.querySelector('#timeline-progress'), margin);
 
   // Initialize map and d3 layer
   const [map, layer] = createMap('map');
 
-  renderHistogram(nukeData);
-  renderMilitaryExpenditures(militaryData);
+  // Initialize progressbar
+  const progressbar = createProgress(document.querySelector('#timeline-progress'), margin);
+
+  // Initialize timeline
+  const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), margin);
+  timeline.draw();
+
+  // Initialize histogram
+  const histogram = Histogram(store);
+  histogram.render();
+
   // Initialize simulation
-  const simulation = createSimulation(nukeData, (points, progress) => {
+  const simulation = createSimulation(store.getNukeData(), (points, progress) => {
     // if (points.length > 0) {
     //   playBoom();
     // }
     renderPoints(map, layer, points);
     progressbar.set(progress);
+
+    if (points.length) {
+      histogram.setCurrentYear(getYear(points[0].time));
+    }
+    histogram.render();
   });
-
-  // Initialize histogram
-  renderHistogram(nukeData);
-
-  // Initialize timeline
-  const timeline = createTimeline(nukeData, document.querySelector('#timeline-axis'), margin);
-  timeline.draw();
-  onResize(window, timeline.draw);
 
   // Start simulation when map is loaded
   map.on('load', () => {
-    play(background);
+    play(store.getBackgroundMusic());
     simulation.start();
   });
+
+  onResize(window, () => {
+    timeline.draw();
+    histogram.render();
+  });
 })();
+
