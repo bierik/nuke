@@ -11,6 +11,7 @@ export async function Store() {
   // get distinct countries: [USA, RUS, ...]
   function getCountries() {
     return nukeData.map(d => d.country)
+      .sort()
       .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
   }
 
