@@ -21,20 +21,9 @@ const x = d3.scaleTime()
 const y = d3.scaleLinear()
   .rangeRound([height, 0]);
 
-export default function renderHistogram(data) {
-  const countries = data.map(d => d.country)
-    .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
-
-  const histogramData = Object.values(data.reduce((acc, current) => {
-    let year = new Date(Number.parseInt(current.time, 10)).getFullYear();
-    year = d3.timeParse('%Y')(year);
-
-    acc[year] = acc[year] || { year };
-    acc[year][current.country] = (acc[year][current.country] || 0) + 1;
-    acc[year].total = (acc[year].total || 0) + 1;
-
-    return acc;
-  }, {}));
+export default function renderHistogram(store) {
+  const countries = store.getCountries();
+  const histogramData = store.getNukesPerYear();
 
   x.domain(d3.extent(histogramData, d => d.year));
   y.domain([0, d3.max(histogramData, d => d.total)]).nice();
@@ -66,6 +55,7 @@ export default function renderHistogram(data) {
   g.append('g')
     .attr('class', 'axis')
     .call(d3.axisLeft(y).ticks(null, 's'));
+    
 
   // legend
   const legend = g.append('g')

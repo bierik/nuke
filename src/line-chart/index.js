@@ -37,16 +37,13 @@ function drawLine(data) {
     .attr('d', line); // define d3 line function and use it here..
 }
 
-export default function renderMilitaryExpenditures(data) {
-  data.forEach((d) => {
-    const year = parseTime(d.year);
-    const militaryExpenditures = Number.parseInt(d.militaryExpenditures, 10);
-    Object.assign(d, { year, militaryExpenditures });
-  });
+export default function renderMilitaryExpenditures(store) {
+  const militaryExpenses = store.getMilitaryExpenses();
+
 
   // returns the minimum and maximum value in the given array
-  x.domain(d3.extent(data, d => d.year));
-  y.domain(d3.extent(data, d => d.militaryExpenditures));
+  x.domain(d3.extent(militaryExpenses, d => d.year));
+  y.domain(d3.extent(militaryExpenses, d => d.militaryExpenditures));
 
   // x-axis
   // let xAxis = d3.axisBottom(x).ticks(15);
@@ -59,7 +56,7 @@ export default function renderMilitaryExpenditures(data) {
 
   // y-axis
   g.append('g')
-    .call(d3.axisLeft(y).ticks(5)) // controls the number of ticks
+    .call(d3.axisLeft(y).ticks(5, 's')) // controls the number of ticks
     .append('text')
     .attr('fill', '#000')
     .attr('transform', 'rotate(-90)')
@@ -68,9 +65,5 @@ export default function renderMilitaryExpenditures(data) {
     .attr('text-anchor', 'end')
     .text('Price ($)');
 
-  Object.values(data.reduce((acc, current) => {
-    acc[current.country] = acc[current.country] || [];
-    acc[current.country].push(current);
-    return acc;
-  }, {})).map(d => drawLine(d));
+  store.getMilitaryExpensesPerCountry(militaryExpenses).map(d => drawLine(d));
 }
