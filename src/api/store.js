@@ -1,6 +1,6 @@
-import * as d3 from 'd3';
 import { sortByTime } from '@/map';
 import { loadNukeData, loadMilitaryData, loadBoomSound, loadBackgroundMusic } from '@/api';
+import { yearToD3Time, getYear } from '@/utils';
 
 export async function Store() {
   const nukeData = await loadNukeData();
@@ -17,8 +17,7 @@ export async function Store() {
   // [ {year: 1945, USA: 5, RUS: 2, total: 7}, {year: 1945, USA: 2, total: 2}, ...]
   function getNukesPerYear() {
     return Object.values(nukeData.reduce((acc, current) => {
-      let year = new Date(Number.parseInt(current.time, 10)).getFullYear(); // get year
-      year = d3.timeParse('%Y')(year); // parse to d3 time
+      const year = yearToD3Time(getYear(current.time));
 
       acc[year] = acc[year] || { year };
       acc[year][current.country] = (acc[year][current.country] || 0) + 1;
@@ -31,7 +30,7 @@ export async function Store() {
   // get military expenses per country and year: [ {year: 1945, country: USA, expenses: 580 },  ...]
   function getMilitaryExpenses() {
     return militaryData.map((d) => {
-      const year = d3.timeParse('%Y')(d.year); // parse to d3 time
+      const year = yearToD3Time(d.year);
       const militaryExpenditures = Number.parseInt(d.militaryExpenditures, 10); // parse to int
       return Object.assign(d, { year, militaryExpenditures });
     });
