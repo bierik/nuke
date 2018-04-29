@@ -1,92 +1,134 @@
 import * as d3 from 'd3';
 import { getColor } from '@/map';
+import { yearToD3Time } from '@/utils';
+import { createLegend } from '@/histogram/legend';
+import { createXAxis, createYAxis } from '@/histogram/axis';
 
-const svgWidth = 1600;
 const svgHeight = 500;
-
-const svg = d3.select('#histogram')
-  .attr('width', svgWidth)
-  .attr('height', svgHeight);
-
 const margin = {
-  top: 20, right: 20, bottom: 30, left: 100,
+  top: 10, right: 50, bottom: 30, left: 50,
 };
-const width = svgWidth - margin.left - margin.right;
-const height = svgHeight - margin.top - margin.bottom;
-const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-const x = d3.scaleTime()
-  .rangeRound([0, width]);
+export function Histogram(store) {
+  const countries = store.getCountries();
+  const nukesPerYear = store.getNukesPerYear();
+  const militaryExpenses = store.getMilitaryExpenses();
+  const militaryExpensesPerCountry = store.getMilitaryExpensesPerCountry();
 
-const y = d3.scaleLinear()
-  .rangeRound([height, 0]);
+  let currentYear = nukesPerYear[0].year; // in d3 time
+  function setCurrentYear(year) {
+    currentYear = yearToD3Time(year);
+  }
 
-export default function renderHistogram(data) {
-  const countries = data.map(d => d.country)
-    .reduce((a, c) => (a.includes(c) ? a : [...a, c]), []); // distinct
+  function initSVG(svgId) {
+    const svg = d3.select(svgId)
+      .attr('width', '100%')
+      .attr('height', svgHeight);
 
-  const histogramData = Object.values(data.reduce((acc, current) => {
-    let year = new Date(Number.parseInt(current.time, 10)).getFullYear();
-    year = d3.timeParse('%Y')(year);
+    svg.selectAll('*').remove();
 
-    acc[year] = acc[year] || { year };
-    acc[year][current.country] = (acc[year][current.country] || 0) + 1;
-    acc[year].total = (acc[year].total || 0) + 1;
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const width = svgWidth - margin.left - margin.right;
+    const height = svgHeight - margin.top - margin.bottom;
 
-    return acc;
-  }, {}));
+    const g = svg.append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  x.domain(d3.extent(histogramData, d => d.year));
-  y.domain([0, d3.max(histogramData, d => d.total)]).nice();
+    return { g, width, height };
+  }
 
-  // stacked bars
-  g.append('g')
-    .selectAll('g')
-    .data(d3.stack().keys(countries)(histogramData))
-    .enter()
-    .append('g')
-    .attr('fill', d => getColor(d.key))
-    .selectAll('rect')
-    .data(d => d)
-    .enter()
-    .append('rect')
-    .attr('x', d => x(d.data.year))
-    .attr('y', d => y(d[1]) || 0)
-    .attr('height', d => y(d[0]) - y(d[1]) || 0)
-    .attr('width', 20);
+  function renderNukesPerYear() {
+    const svg = initSVG('#nukes-per-year');
 
-  // x-axis
-  g.append('g')
-    .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x)) // use .tick(value) to control the ticks..
-    .select('.domain') // remove the lines...
-    .remove();
+    const x = d3.scaleTime()
+      .domain(d3.extent(nukesPerYear, d => d.year))
+      .range([0, svg.width])
+      .nice();
 
-  // y-axis
-  g.append('g')
-    .attr('class', 'axis')
-    .call(d3.axisLeft(y).ticks(null, 's'));
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(nukesPerYear, d => d.total)])
+      .range([svg.height, 0]);
 
-  // legend
-  const legend = g.append('g')
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', 10)
-    .attr('text-anchor', 'end')
-    .selectAll('g')
-    .data(countries.slice().reverse())
-    .enter()
-    .append('g')
-    .attr('transform', (d, i) => `translate(0,${20 * i})`);
+    // stacked bars
+    svg.g.append('g')
+      .selectAll('g')
+      .data(d3.stack().keys(countries)(nukesPerYear))
+      .enter()
+      .append('g')
+      .attr('fill', d => getColor(d.key))
+      .selectAll('rect')
+      .data(d => d)
+      .enter()
+      .append('rect')
+      .style('opacity', (d) => {
+        // linter doesn't like: (d => d.data.year > currentYear ? 0.3 : 1)
+        let opacity = 1;
+        if (d.data.year > currentYear) {
+          opacity = 0.3;
+        }
+        return opacity;
+      })
+      .attr('x', d => x(d.data.year))
+      .attr('y', d => y(d[1]) || 0)
+      .attr('height', d => y(d[0]) - y(d[1]) || 0)
+      .attr('width', (svg.width / nukesPerYear.length) * 0.7);
 
-  legend.append('rect')
-    .attr('x', width - 19)
-    .attr('width', 19)
-    .attr('height', 19)
-    .attr('fill', getColor);
+    svg.g.append(() => createXAxis(x, 0, svg.height).node());
+    svg.g.append(() => createYAxis(y, 0, 0, 'Amount of Nukes').node());
 
-  legend.append('text')
-    .attr('x', width - 24)
-    .attr('y', 9.5)
-    .attr('dy', '0.32em')
-    .text(d => d);
+    svg.g.append(() => createLegend(store, svg.width - 20, 20).node());
+  }
+
+
+  function renderMilitaryExpenditures() {
+    const svg = initSVG('#military-expenditures');
+
+    const x = d3.scaleTime()
+      .domain(d3.extent(militaryExpenses, d => d.year))
+      .range([0, svg.width])
+      .nice();
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(militaryExpenses, d => d.militaryExpenditures)])
+      .range([svg.height, 0]);
+
+    const line = d3.line()
+      .x(d => x(d.year))
+      .y(d => y(d.militaryExpenditures));
+
+    const drawLine = (data, opacity = 1) => {
+      // line data values
+      svg.g.append('path')
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', getColor(data[0].country))
+        .attr('opacity', opacity)
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-width', 3)
+        .attr('d', line); // define d3 line function and use it here..
+    };
+
+    svg.g.append(() => createXAxis(x, 0, svg.height).node());
+    svg.g.append(() => createYAxis(y, 0, 0, 'Expenses ($)').node());
+
+
+    militaryExpensesPerCountry.forEach((country) => {
+      let data = country.filter(expense => expense.year >= currentYear);
+      if (data.length) {
+        drawLine(data, 0.3);
+      }
+      data = country.filter(expense => expense.year <= currentYear);
+      if (data.length) {
+        drawLine(data);
+      }
+    });
+  }
+
+  function render() {
+    renderNukesPerYear();
+    renderMilitaryExpenditures();
+  }
+
+  return { render, setCurrentYear };
 }
