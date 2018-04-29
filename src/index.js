@@ -9,15 +9,12 @@ import { createTimeline } from '@/timeline';
 import { createProgress } from '@/progress';
 import { onResize, getYear } from '@/utils';
 import { play } from '@/api/audio';
-import throttle from 'lodash.throttle';
 import { Store } from '@/api/store';
 
 (async () => {
   // Initialize store
   const store = await Store();
 
-  const playBoom = throttle(() => play(store.getBackgroundMusic()), 1);
- 
   const margin = {
     top: 0, right: 50, bottom: 0, left: 50,
   };
@@ -38,9 +35,6 @@ import { Store } from '@/api/store';
 
   // Initialize simulation
   const simulation = createSimulation(store.getNukeData(), (points, progress) => {
-    // if (points.length > 0) {
-    //   playBoom();
-    // }
     renderPoints(map, layer, points);
     progressbar.set(progress);
 
@@ -50,10 +44,15 @@ import { Store } from '@/api/store';
     histogram.render();
   });
 
-  // Start simulation when map is loaded
-  map.on('load', () => {
+  function start() {
     play(store.getBackgroundMusic());
     simulation.start();
+    document.querySelector('body').classList.add('running');
+  }
+
+  map.on('load', () => {
+    document.querySelector('body').classList.remove('loading');
+    document.querySelector('.start-nuke').addEventListener('click', start);
   });
 
   onResize(window, () => {
