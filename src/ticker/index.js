@@ -1,8 +1,10 @@
 import { now } from '@/utils';
 import { defaultInterval } from '@/config';
 
-
-export function createTicker(callback, { init = false, initValue = null, interval = defaultInterval } = {}) {
+export function createTicker(
+  callback,
+  { init = false, initValue = null, interval = defaultInterval } = {},
+) {
   let running = init;
   let returnValue = initValue;
 
@@ -22,8 +24,11 @@ export function createTicker(callback, { init = false, initValue = null, interva
   next();
 
   return Object.freeze({
-    start: () => { running = true; },
-    stop: () => { running = false; },
+    start: () => {
+      running = true;
+    },
+    stop: () => {
+      running = false;
+    },
   });
 }
-
