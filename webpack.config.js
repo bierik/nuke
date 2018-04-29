@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = env => ({
@@ -49,8 +50,14 @@ module.exports = env => ({
       chunkFilename: '[id].css',
     }),
     new webpack.DefinePlugin({
-      'process.env.API_ROOT': JSON.stringify(env && env.production ? 'http://nuke.ch' : 'http://localhost:8080'),
+      'process.env.API_ROOT': JSON.stringify(env && env.production ? 'https://ivis-nuke.herokuapp.com/' : 'http://localhost:8080'),
     }),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, 'src/assets'),
+        to: path.resolve(__dirname, 'dist/assets'),
+      },
+    ]),
   ],
   devtool: '#eval-source-map',
   devServer: {
