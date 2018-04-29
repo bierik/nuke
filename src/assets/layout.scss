@@ -3,15 +3,15 @@
 }
 
 .track-row {
-  height: 200px;
+  height: 45px;
 }
 
 .histogram-row {
-  height: 200px;
+  height: 80px;
 }
 
 .military-expenditures-row {
-  height: 500px;
+  height: 75px;
 }
 
 #map {
@@ -37,7 +37,8 @@
     width: 0;
     transform: scale(0);
     transform-origin: left top;
-    background: red;
+    background: #FECB2F;
     height: 20px;
+    transition: transform .1s;
   }
 }
