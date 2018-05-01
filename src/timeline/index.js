@@ -1,26 +1,17 @@
 import * as d3 from 'd3';
+import { createContainer, adjustBounds, calcRangeWidth } from '@/container';
 
-export function createTimeline(data, container, margin) {
-  const first = new Date(Number.parseInt(data[0].time, 10));
-  const last = new Date(Number.parseInt(data[data.length - 1].time, 10));
 
-  const timelineContainer = d3
-    .select(container)
-    .append('svg')
-    .attr('width', '100%')
-    .append('g');
+export function createTimeline(data, target, margin) {
+  const { container, g } = createContainer(target, margin);
+  const x = d3.scaleTime()
+    .domain(d3.extent(data, d => Number.parseInt(d.time, 10)))
+    .nice();
 
   function draw() {
-    const containerWidth = container.getBoundingClientRect().width;
-    const scale = d3.scaleTime()
-      .domain([first, last])
-      .range([0, containerWidth - margin.left - margin.right])
-      .nice();
-
-    timelineContainer
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .attr('width', containerWidth - margin.left - margin.right)
-      .call(d3.axisBottom(scale));
+    adjustBounds(target, container, margin);
+    x.range([0, calcRangeWidth(target, margin)]);
+    g.call(d3.axisBottom(x));
   }
 
   return Object.freeze({ draw });

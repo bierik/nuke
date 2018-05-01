@@ -1,4 +1,4 @@
-const colorMap = {
+export const colorMap = {
   USA: 'rgb(55, 126, 184)',
   RUS: 'rgb(228, 26, 28)',
   GBR: 'rgb(77, 175, 74)',
