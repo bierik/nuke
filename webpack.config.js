@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
@@ -26,12 +26,11 @@ module.exports = env => ({
         ],
       },
       {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        test: /\.(css|scss)$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'sass-loader'],
+        }),
       },
       {
         test: /\.js$/,
@@ -45,10 +44,7 @@ module.exports = env => ({
       template: './src/index.html',
       filename: './index.html',
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-    }),
+    new ExtractTextPlugin('styles.css'),
     new webpack.DefinePlugin({
       'process.env.API_ROOT': JSON.stringify(env && env.production ? 'https://ivis-nuke.herokuapp.com/' : 'http://localhost:8080'),
     }),

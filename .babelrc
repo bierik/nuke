@@ -13,15 +13,5 @@
       "transform-object-rest-spread",
       { "useBuiltIns": true }
     ]
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        ["env", {
-        "targets": { "node": 9 }
-        }]
-      ],
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  ]
 }

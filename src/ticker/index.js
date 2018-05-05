@@ -30,5 +30,9 @@ export function createTicker(
     stop: () => {
       running = false;
     },
+    toggle: () => {
+      running = !running;
+    },
+    isRunning: () => running,
   });
 }
