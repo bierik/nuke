@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { colorMap, getColor } from '@/map';
 import { createContainer, adjustBounds, calcRangeWidth } from '@/container';
-import { appendYAxisLabel } from '@/axis';
+import { appendYAxisLabel, horizontalGrid } from '@/axis';
 
 
 export function createHistogram(store, target, margin) {
@@ -20,12 +20,21 @@ export function createHistogram(store, target, margin) {
 
   const stack = d3.stack().keys(Object.keys(colorMap))(nukesPerYear);
 
+  appendYAxisLabel(g.call(d3.axisLeft(y).ticks(4, 's')), 'Nukes');
+
   function draw() {
     adjustBounds(target, container, margin);
 
-    x.range([0, calcRangeWidth(target, margin)]);
+    const width = calcRangeWidth(target, margin);
+
+    x.range([0, width]);
 
     g.selectAll('g').remove();
+
+    container.append('g')
+      .attr('class', 'grid')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .call(horizontalGrid(y, 4, width));
 
     // stacked bars
     g.selectAll('g')
@@ -42,7 +51,7 @@ export function createHistogram(store, target, margin) {
       .attr('height', d => y(d[0]) - y(d[1]))
       .attr('width', x.bandwidth());
 
-    appendYAxisLabel(g.call(d3.axisLeft(y).ticks(4, 's')), 'Nukes');
+    g.call(d3.axisLeft(y).ticks(4, 's'));
   }
 
   return Object.freeze({ draw });

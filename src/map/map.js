@@ -42,9 +42,12 @@ export function renderPoints(map, layer, points) {
     .attr('transform', d => createTranslation(d, projection))
     .attr('r', 0)
     .transition()
-    .duration(1000)
+    .duration(800)
+    .style('opacity', 0.4)
+    .attr('r', d => Math.sqrt(yieldMapper(d.yield) + Math.PI) * 10)
+    .transition()
+    .duration(300)
     .style('opacity', 0)
-    .attr('r', d => yieldMapper(d.yield) * 4)
     .remove();
 }
 
@@ -61,6 +64,7 @@ export function createMap(target) {
     style: mapStyle,
     center: mapCenter,
     zoom: mapZoom,
+    renderWorldCopies: false,
     interactive: false,
   });
 

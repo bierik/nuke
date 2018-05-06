@@ -1,3 +1,6 @@
+import * as d3 from 'd3';
+
+
 export function appendYAxisLabel(axis, text = '') {
   axis
     .append('text')
@@ -9,4 +12,12 @@ export function appendYAxisLabel(axis, text = '') {
     .text(text);
 
   return axis;
+}
+
+export function horizontalGrid(axis, ticks, tickSize) {
+  return d3
+    .axisLeft(axis)
+    .ticks(5)
+    .tickSize(-tickSize)
+    .tickFormat('');
 }

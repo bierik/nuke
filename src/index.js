@@ -82,6 +82,7 @@ import { Store } from '@/api/store';
     military.draw();
     histogram.draw();
     timeline.draw();
+    map.fitBounds([[-180, 0], [180, 70]]);
   }
 
   map.on('load', () => {
