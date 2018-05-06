@@ -31,9 +31,10 @@ import { Store } from '@/api/store';
     target: document.querySelector('body'),
     activate() {
       this.target.classList.add('running');
+      this.target.classList.remove('paused');
     },
     deactivate() {
-      this.target.classList.remove('running');
+      this.target.classList.add('paused');
     },
   };
 
