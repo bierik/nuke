@@ -3,7 +3,6 @@ import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
 import { renderPoints, createMap } from '@/map';
 import { createHistogram } from '@/histogram';
-import { craeteMilitaryChart } from '@/military';
 import { createSimulation } from '@/simulation';
 import { createTimeline } from '@/timeline';
 import { createLegend } from '@/legend';
@@ -55,11 +54,6 @@ import { Store } from '@/api/store';
   // Initialize legend
   createLegend(document.querySelector('#country-legend'));
 
-  // Initialize military chart
-  const military = craeteMilitaryChart(store, document.querySelector('#military-expenses'), {
-    top: 0, right: 50, bottom: 0, left: 50,
-  });
-
   // Initialize simulation
   const simulation = createSimulation(store, (points, progress) => {
     renderPoints(map, layer, points);
@@ -79,7 +73,7 @@ import { Store } from '@/api/store';
   }
 
   function draw() {
-    military.draw();
+    // military.draw();
     histogram.draw();
     timeline.draw();
     map.fitBounds([[-180, 0], [180, 70]]);

@@ -8,7 +8,7 @@ export function createHistogram(store, target, margin) {
   const nukesPerYear = store.getNukesPerYear();
 
   const { container, g } = createContainer(target, margin);
-  const height = 60;
+  const height = 150;
 
   const x = d3.scaleBand()
     .domain(nukesPerYear.map(d => d.year))

@@ -102,8 +102,10 @@ body {
   height: calc(100vh - 200px);
 }
 
+
+
 .histogram-row {
-  height: 80px;
+  height: 170px;
 }
 
 #military-expenses path {
@@ -117,6 +119,10 @@ body {
 
 .timeline-row {
   height: 40px;
+}
+
+svg {
+  height: 100%;
 }
 
 #map {
