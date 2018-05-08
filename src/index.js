@@ -1,11 +1,12 @@
 import '~/normalize.css/normalize.css';
 import '~/flexboxgrid-sass/flexboxgrid.scss';
 import 'assets/layout.scss';
-import { renderPoints, createMap } from '@/map';
+import { renderPoints, createMap, colorMap } from '@/map';
 import { createHistogram } from '@/histogram';
 import { createSimulation } from '@/simulation';
 import { createTimeline } from '@/timeline';
 import { createLegend } from '@/legend';
+import { craeteMilitaryChart } from '@/military';
 import { createProgress } from '@/progress';
 import { onResize } from '@/utils';
 import { load, Player } from '@/api/audio';
@@ -20,6 +21,7 @@ import { Store } from '@/api/store';
 
   const player = new Player();
   const backgroundMusic = await load(PLAYBACK_FILE, player.context);
+  const countryCodes = Object.keys(colorMap);
 
 
   const margin = {
@@ -60,6 +62,13 @@ import { Store } from '@/api/store';
     progressbar.set(progress);
   });
 
+  const militaryTargets = document.querySelectorAll('.military-target');
+
+  const militaryCharts = countryCodes
+    .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], {
+      top: 10, left: 40, bottom: 10, right: 30,
+    }));
+
   function toggle() {
     if (simulation.isRunning()) {
       simulation.stop();
@@ -73,10 +82,10 @@ import { Store } from '@/api/store';
   }
 
   function draw() {
-    // military.draw();
     histogram.draw();
     timeline.draw();
     map.fitBounds([[-180, 0], [180, 70]]);
+    militaryCharts.forEach(m => m.draw());
   }
 
   map.on('load', () => {

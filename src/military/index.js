@@ -1,34 +1,31 @@
 import * as d3 from 'd3';
-import { colorMap, getColor } from '@/map';
+import { getColor } from '@/map';
 import { createContainer, adjustBounds, calcRangeWidth } from '@/container';
-import groupBy from 'lodash.groupby';
-import { appendYAxisLabel, horizontalGrid } from '@/axis';
 
 
-export function craeteMilitaryChart(store, target, margin) {
-  const militaryExpenses = store.getMilitaryData();
+export function craeteMilitaryChart(store, countryCode, target, margin) {
+  const militaryExpenses = store.getMilitaryData(countryCode);
 
-  const { container, g } = createContainer(target, margin);
+  const { container } = createContainer(target, margin);
 
-  const expensesPerCountry = groupBy(militaryExpenses, 'country');
   const height = 80;
 
   const x = d3
     .scaleTime()
-    .domain(d3.extent(militaryExpenses, d => Number.parseInt(d.year, 10)));
+    .domain(d3.extent(militaryExpenses, d => new Date(d.year, 0, 1)))
+    .nice();
 
   const y = d3
     .scaleLinear()
     .range([height, 0])
-    .domain(d3.extent(militaryExpenses, d => Number.parseInt(d.militaryExpenditures, 10)));
+    .domain(d3.extent(militaryExpenses, d => Number.parseInt(d.militaryExpenditures, 10)))
+    .nice();
 
   const line = d3
     .line()
     .curve(d3.curveBasis)
-    .x(d => x(d.year))
+    .x(d => x(new Date(d.year, 0, 1)))
     .y(d => y(d.militaryExpenditures));
-
-  appendYAxisLabel(g.call(d3.axisLeft(y).ticks(4, 's')), 'Expenses ($)');
 
   function draw() {
     adjustBounds(target, container, margin);
@@ -37,23 +34,28 @@ export function craeteMilitaryChart(store, target, margin) {
 
     x.range([0, width]);
 
-    g.selectAll('g').remove();
-
-    g
-      .selectAll('g')
-      .data(Object.keys(colorMap))
-      .enter()
-      .append('g')
-      .append('path')
-      .attr('d', d => line(expensesPerCountry[d]))
-      .style('stroke', getColor);
+    container.selectAll('g').remove();
 
     container.append('g')
-      .attr('class', 'grid')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .call(horizontalGrid(y, 4, width));
+      .append('path')
+      .datum(militaryExpenses)
+      .attr('fill', 'none')
+      .attr('stroke', getColor(countryCode))
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-width', 1.5)
+      .attr('d', line);
 
-    g.call(d3.axisLeft(y).ticks(4, 's'));
+    container
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .call(d3.axisLeft(y).ticks(2, 's'));
+
+    container
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
+      .call(d3.axisBottom(x).ticks(2));
   }
 
   return Object.freeze({ draw });

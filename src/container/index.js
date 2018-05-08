@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
 
 
-export function createContainer(target, { top = 0, left = 0 }) {
+export function createContainer(target, { top = 0, left = 0, right = 0 }) {
   const { width } = target.getBoundingClientRect();
   const container = d3
     .select(target)
     .append('svg')
-    .attr('width', width);
+    .attr('width', width - left - right);
   const g = container.append('g')
     .attr('transform', `translate(${left}, ${top})`);
   return { container, g };

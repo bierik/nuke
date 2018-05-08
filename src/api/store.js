@@ -30,9 +30,13 @@ export async function Store() {
       .map(e => Object.assign(Object.assign({}, defaultCountryValues), e));
   }
 
+  function getMilitaryData(countryCode) {
+    return militaryData.filter(d => d.country === countryCode);
+  }
+
   return {
     getNukeData: () => sortByTime(nukeData),
-    getMilitaryData: () => militaryData,
+    getMilitaryData,
     getNukesPerYear,
   };
 }

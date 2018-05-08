@@ -170,7 +170,11 @@ svg {
 
 #country-legend {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 100px;
+  left: 20px;
   z-index: 1;
+}
+
+.military-target {
+  height: calc(100vh / 8);
 }
