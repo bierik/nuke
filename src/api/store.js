@@ -34,9 +34,14 @@ export async function Store() {
     return militaryData.filter(d => d.country === countryCode);
   }
 
+  function nukesByCountry(countryCode) {
+    return sortByTime(nukeData.filter(d => d.country === countryCode));
+  }
+
   return {
     getNukeData: () => sortByTime(nukeData),
     getMilitaryData,
     getNukesPerYear,
+    nukesByCountry,
   };
 }

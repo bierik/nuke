@@ -56,18 +56,19 @@ import { Store } from '@/api/store';
   // Initialize legend
   createLegend(document.querySelector('#country-legend'));
 
-  // Initialize simulation
-  const simulation = createSimulation(store, (points, progress) => {
-    renderPoints(map, layer, points);
-    progressbar.set(progress);
-  });
-
   const militaryTargets = document.querySelectorAll('.military-target');
 
   const militaryCharts = countryCodes
     .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], {
       top: 10, left: 40, bottom: 10, right: 30,
     }));
+
+  // Initialize simulation
+  const simulation = createSimulation(store, (points, progress, now) => {
+    militaryCharts.forEach(m => m.setNukes(now));
+    renderPoints(map, layer, points);
+    progressbar.set(progress);
+  });
 
   function toggle() {
     if (simulation.isRunning()) {

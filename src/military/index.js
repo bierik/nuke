@@ -5,6 +5,7 @@ import { createContainer, adjustBounds, calcRangeWidth } from '@/container';
 
 export function craeteMilitaryChart(store, countryCode, target, margin) {
   const militaryExpenses = store.getMilitaryData(countryCode);
+  const nukePerCountry = store.nukesByCountry(countryCode);
 
   const { container } = createContainer(target, margin);
 
@@ -26,6 +27,13 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     .curve(d3.curveBasis)
     .x(d => x(new Date(d.year, 0, 1)))
     .y(d => y(d.militaryExpenditures));
+
+  const counterTarget = container
+    .append('text')
+    .attr('fill', '#000')
+    .attr('y', 30)
+    .attr('x', 80)
+    .text('0 Nukes');
 
   function draw() {
     adjustBounds(target, container, margin);
@@ -50,13 +58,38 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     container
       .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .call(d3.axisLeft(y).ticks(2, 's'));
+      .call(d3.axisLeft(y).ticks(4, 's'));
 
     container
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
-      .call(d3.axisBottom(x).ticks(2));
+      .call(d3.axisBottom(x).ticks(5))
+      .append('text')
+      .attr('fill', '#000')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 6)
+      .attr('x', height)
+      .attr('dy', '0.71em')
+      .attr('text-anchor', 'end')
+      .text('Expenses ($)');
   }
 
-  return Object.freeze({ draw });
+  function setNukes(date) {
+    counterTarget.text(`${nukePerCountry.filter(d => d.time < date.getTime()).length} Nukes`);
+  }
+
+  function renderLine() {
+    path
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+        .duration(2000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0);
+  }
+
+  return Object.freeze({
+    draw,
+    setNukes,
+  });
 }
