@@ -6,20 +6,23 @@ import mapValues from 'lodash.mapvalues';
 
 
 export function craeteMilitaryChart(store, countryCode, target, margin) {
+  const nukesPerYear = store.getNukesPerYear();
   const militaryExpenses = store.getMilitaryData(countryCode);
   const nukesByCountry = store.nukesByCountry(countryCode);
-  const nukesPerYear = mapValues(
+  const nukesPerYearCount = mapValues(
     groupBy(nukesByCountry, d => new Date(Number.parseInt(d.time, 10)).getFullYear()),
     d => d.length,
   );
 
-  const listNukesPerYear = Object.keys(nukesPerYear).map(d => ({ year: d, amount: nukesPerYear[d] }));
+  const listNukesPerYear = Object
+    .keys(nukesPerYearCount)
+    .map(d => ({ year: d, amount: nukesPerYearCount[d] }));
 
   const { container } = createContainer(target, margin);
 
   const height = 80;
 
-  const x = d3
+  const xExpenses = d3
     .scaleTime()
     .domain(d3.extent(militaryExpenses, d => new Date(d.year, 0, 1)))
     .nice();
@@ -30,23 +33,22 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     .domain(d3.extent(militaryExpenses, d => Number.parseInt(d.militaryExpenditures, 10)))
     .nice();
 
+  const xNukes = d3
+    .scaleBand()
+    .domain(nukesPerYear.map(d => d.year))
+    .paddingInner(0.1);
+
   const yNukes = d3
     .scaleLinear()
     .range([height, 0])
-    .domain(d3.extent([0, ...Object.values(nukesPerYear)]))
+    .domain(d3.extent([0, ...Object.values(nukesPerYearCount)]))
     .nice();
 
   const lineExpenses = d3
     .line()
     .curve(d3.curveBasis)
-    .x(d => x(new Date(d.year, 0, 1)))
+    .x(d => xExpenses(new Date(d.year, 0, 1)))
     .y(d => yExpenses(d.militaryExpenditures));
-
-  const lineNukes = d3
-    .line()
-    .curve(d3.curveBasis)
-    .x(d => x(new Date(d.year, 0, 1)))
-    .y(d => yNukes(d.amount));
 
   const counterTarget = container
     .append('text')
@@ -60,12 +62,13 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
 
     const width = calcRangeWidth(target, margin);
 
-    x.range([0, width]);
+    xExpenses.range([0, width]);
+    xNukes.range([0, width]);
 
     container.selectAll('g').remove();
 
     container.append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .attr('transform', `translate(${margin.left + 2}, ${margin.top})`)
       .append('path')
       .datum(militaryExpenses)
       .attr('fill', 'none')
@@ -77,14 +80,15 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
 
     container.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .append('path')
-      .datum(listNukesPerYear)
-      .attr('fill', 'none')
-      .attr('stroke', 'black')
-      .attr('stroke-linejoin', 'round')
-      .attr('stroke-linecap', 'round')
-      .attr('stroke-width', 1.5)
-      .attr('d', lineNukes);
+      .selectAll('rect')
+      .data(listNukesPerYear)
+      .enter()
+      .append('rect')
+      .attr('class', 'military-expenses-rect')
+      .attr('x', d => xNukes(d.year))
+      .attr('y', d => yNukes(d.amount || 0))
+      .attr('width', xNukes.bandwidth())
+      .attr('height', d => height - yNukes(d.amount || 0));
 
     container
       .append('g')
@@ -99,7 +103,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     container
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
-      .call(d3.axisBottom(x).ticks(5))
+      .call(d3.axisBottom(xExpenses).ticks(5))
       .append('text')
       .attr('fill', '#000')
       .attr('transform', 'rotate(-90)')

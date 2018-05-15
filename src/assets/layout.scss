@@ -151,12 +151,17 @@ svg {
   position: relative;
 }
 
-#timeline-progress {
+.military-expenses-rect {
+  background-color: #607D8B;
+  opacity: .3;
+}
+
+.timeline-progress {
   position: absolute;
   left: 0;
   right: 0;
-  top: 20px;
-  bottom: 40px;
+  top: 0;
+  bottom: 0;
 
   > div {
     width: 0;
@@ -167,7 +172,12 @@ svg {
     height: 100%;
     transition: transform .1s;
   }
+  &.histogram-progress {
+    top: 20px;
+    bottom: 40px;
+  }
 }
+
 
 .mapboxgl-missing-css,
 .mapboxgl-control-container {

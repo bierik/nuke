@@ -43,7 +43,9 @@ import { Store } from '@/api/store';
   const [map, layer] = createMap('map');
 
   // Initialize progressbar
-  const progressbar = createProgress(document.querySelector('#timeline-progress'), margin);
+  const timelineProgresses = Array.from(document
+    .querySelectorAll('.timeline-progress'))
+    .map(p => createProgress(p, margin));
 
   // Initialize timeline
   const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), margin);
@@ -67,7 +69,7 @@ import { Store } from '@/api/store';
   const simulation = createSimulation(store, (points, progress, now) => {
     militaryCharts.forEach(m => m.setNukes(now));
     renderPoints(map, layer, points);
-    progressbar.set(progress);
+    timelineProgresses.forEach(d => d.set(progress));
   });
 
   function toggle() {
