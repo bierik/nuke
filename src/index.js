@@ -60,7 +60,7 @@ import { Store } from '@/api/store';
 
   const militaryCharts = countryCodes
     .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], {
-      top: 10, left: 40, bottom: 10, right: 30,
+      top: 10, left: 40, bottom: 10, right: 50,
     }));
 
   // Initialize simulation
