@@ -43,7 +43,14 @@ import { Store } from '@/api/store';
   const [map, layer] = createMap('map');
 
   // Initialize progressbar
-  const progressbar = createProgress(document.querySelector('#timeline-progress'), margin);
+  const timelineProgresses = [];
+  timelineProgresses.push(createProgress(document.querySelector('#histogram-progress'), margin));
+  timelineProgresses.push(createProgress(document.querySelector('#military-progress'), {
+    top: 10,
+    left: 50,
+    bottom: 10,
+    right: 10,
+  }));
 
   // Initialize timeline
   const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), margin);
@@ -56,18 +63,19 @@ import { Store } from '@/api/store';
   // Initialize legend
   createLegend(document.querySelector('#country-legend'));
 
-  // Initialize simulation
-  const simulation = createSimulation(store, (points, progress) => {
-    renderPoints(map, layer, points);
-    progressbar.set(progress);
-  });
-
   const militaryTargets = document.querySelectorAll('.military-target');
 
   const militaryCharts = countryCodes
     .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], {
-      top: 10, left: 40, bottom: 10, right: 30,
+      top: 10, left: 40, bottom: 10, right: 50,
     }));
+
+  // Initialize simulation
+  const simulation = createSimulation(store, (points, progress, now) => {
+    militaryCharts.forEach(m => m.setNukes(now));
+    renderPoints(map, layer, points);
+    timelineProgresses.forEach(d => d.set(progress));
+  });
 
   function toggle() {
     if (simulation.isRunning()) {

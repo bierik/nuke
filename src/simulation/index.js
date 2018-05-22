@@ -16,7 +16,7 @@ export function createSimulation(store, callback, { resolution = defaultResoluti
       data.splice(0, dataInRange.length);
       const progress = 1 - ((last - now) / length);
       nextTick(data);
-      callback(dataInRange, progress);
+      callback(dataInRange, progress, now);
       now.setTime(now.getTime() + resolution);
       if (last - now <= 0) {
         ticker.stop();
