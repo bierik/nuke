@@ -297,7 +297,13 @@ template {
 [hidden] {
   display: none; }
 body {
-  overflow: hidden; }
+  overflow: hidden;
+  background-color: #F4F8FB;
+  font-family: 'Roboto Mono', monospace; }
+
+text {
+  font-family: 'Roboto Mono', monospace;
+  font-size: .6rem; }
 
 .loading .main:before {
   content: '';
@@ -323,6 +329,17 @@ body {
   animation-duration: 20s;
   animation-timing-function: linear;
   animation-iteration-count: infinite; }
+
+.paused .start-nuke {
+  animation-play-state: paused; }
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges; }
+
+.grid .domain {
+  display: none; }
 
 .start-nuke {
   cursor: pointer;
@@ -356,19 +373,23 @@ body {
     transform: translate3d(20px, 20px, 0) rotate(0deg); } }
 
 .map-row {
-  height: calc(100vh - 220px); }
-
-.track-row {
-  height: 20px; }
+  height: calc(100vh - 200px); }
 
 .histogram-row {
-  height: 80px; }
+  height: 170px; }
+
+#military-expenses path {
+  stroke-width: 2px;
+  shape-rendering: geometricPrecision; }
 
 .military-expenses-row {
   height: 80px; }
 
 .timeline-row {
   height: 40px; }
+
+svg {
+  height: 100%; }
 
 #map {
   height: 100%;
@@ -383,13 +404,39 @@ body {
   width: 100%;
   height: 100%; }
 
-#timeline-progress > div {
-  width: 0;
-  transform: scale(0);
-  transform-origin: left top;
-  background: #FECB2F;
-  height: 20px;
-  transition: transform .1s; }
+.diagramms {
+  position: relative; }
+
+.military-expenses-rect {
+  opacity: .4; }
+
+.military-expenses-axis text {
+  opacity: .6; }
+
+.military-target:hover .military-expenses-axis text {
+  opacity: 1; }
+
+.military-target:hover .military-expenses-rect {
+  opacity: .6; }
+
+.timeline-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none; }
+  .timeline-progress > div {
+    width: 0;
+    transform: scale(0);
+    transform-origin: left top;
+    background: #FECB2F;
+    opacity: .2;
+    height: 100%;
+    transition: transform .1s; }
+  .timeline-progress.histogram-progress {
+    top: 20px;
+    bottom: 40px; }
 
 .mapboxgl-missing-css,
 .mapboxgl-control-container {
@@ -397,9 +444,12 @@ body {
 
 #country-legend {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 100px;
+  left: 20px;
   z-index: 1; }
+
+.military-target {
+  height: calc(100vh / 8); }
 .wrapper {
   box-sizing: border-box;
   max-width: 1200px;
