@@ -1,12 +1,12 @@
 export const colorMap = {
-  USA: '#5C6BC0',
-  RUS: '#EF5350',
-  GBR: '#AB47BC',
-  FRA: '#26A69A',
-  CHN: '#9CCC65',
-  IND: '#FFCA28',
-  PAK: '#78909C',
-  PRK: '#8D6E63',
+  USA: '#cb4f42',
+  RUS: '#45b2c4',
+  GBR: '#b85abe',
+  FRA: '#57a95b',
+  CHN: '#7278cb',
+  IND: '#999a3e',
+  PAK: '#c55d86',
+  PRK: '#c98443',
 };
 
 export function getColor(country) { return colorMap[country]; }

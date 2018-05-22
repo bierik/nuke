@@ -43,9 +43,14 @@ import { Store } from '@/api/store';
   const [map, layer] = createMap('map');
 
   // Initialize progressbar
-  const timelineProgresses = Array.from(document
-    .querySelectorAll('.timeline-progress'))
-    .map(p => createProgress(p, margin));
+  const timelineProgresses = [];
+  timelineProgresses.push(createProgress(document.querySelector('#histogram-progress'), margin));
+  timelineProgresses.push(createProgress(document.querySelector('#military-progress'), {
+    top: 10,
+    left: 50,
+    bottom: 10,
+    right: 10,
+  }));
 
   // Initialize timeline
   const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), margin);

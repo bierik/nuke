@@ -5,6 +5,10 @@ import groupBy from 'lodash.groupby';
 import mapValues from 'lodash.mapvalues';
 
 
+function nukeText(nukes = 0) {
+  return `Nukes: ${nukes}`;
+}
+
 export function craeteMilitaryChart(store, countryCode, target, margin) {
   const nukesPerYear = store.getNukesPerYear();
   const militaryExpenses = store.getMilitaryData(countryCode);
@@ -53,9 +57,9 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
   const counterTarget = container
     .append('text')
     .attr('fill', '#000')
-    .attr('y', 30)
-    .attr('x', 80)
-    .text('0 Nukes');
+    .attr('y', 20)
+    .attr('x', margin.left + 5)
+    .text(nukeText());
 
   function draw() {
     adjustBounds(target, container, margin);
@@ -68,7 +72,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     container.selectAll('g').remove();
 
     container.append('g')
-      .attr('transform', `translate(${margin.left + 2}, ${margin.top})`)
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .append('path')
       .datum(militaryExpenses)
       .attr('fill', 'none')
@@ -84,6 +88,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
       .data(listNukesPerYear)
       .enter()
       .append('rect')
+      .attr('fill', getColor(countryCode))
       .attr('class', 'military-expenses-rect')
       .attr('x', d => xNukes(d.year))
       .attr('y', d => yNukes(d.amount || 0))
@@ -92,30 +97,31 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
 
     container
       .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .call(d3.axisLeft(yExpenses).ticks(4, 's'));
-
-    container
-      .append('g')
+      .attr('class', 'military-expenses-axis')
       .attr('transform', `translate(${width + margin.left}, ${margin.top})`)
-      .call(d3.axisRight(yNukes).ticks(4, 's').tickFormat(d3.format('d')));
+      .call(d3.axisRight(yExpenses).ticks(4, 's'));
 
     container
       .append('g')
+      .attr('class', 'military-expenses-axis')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .call(d3.axisLeft(yNukes).ticks(4, 's').tickFormat(d3.format('d')));
+
+    container
+      .append('g')
+      .attr('class', 'military-expenses-axis')
       .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
       .call(d3.axisBottom(xExpenses).ticks(5))
       .append('text')
       .attr('fill', '#000')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', 6)
-      .attr('x', height)
-      .attr('dy', '0.71em')
+      .attr('y', -height + 10)
+      .attr('x', width - 4)
       .attr('text-anchor', 'end')
-      .text('Expenses ($)');
+      .text('$');
   }
 
   function setNukes(date) {
-    counterTarget.text(`${nukesByCountry.filter(d => d.time < date.getTime()).length} Nukes`);
+    counterTarget.text(nukeText(nukesByCountry.filter(d => d.time < date.getTime()).length));
   }
 
   return Object.freeze({

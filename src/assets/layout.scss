@@ -152,8 +152,21 @@ svg {
 }
 
 .military-expenses-rect {
-  background-color: #607D8B;
-  opacity: .3;
+  opacity: .4;
+}
+
+.military-expenses-axis text {
+  opacity: .6;
+}
+
+.military-target:hover {
+  .military-expenses-axis text {
+    opacity: 1;
+  }
+
+  .military-expenses-rect {
+    opacity: .6;
+  }
 }
 
 .timeline-progress {
@@ -162,6 +175,7 @@ svg {
   right: 0;
   top: 0;
   bottom: 0;
+  pointer-events: none;
 
   > div {
     width: 0;
