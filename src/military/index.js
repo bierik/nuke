@@ -5,8 +5,8 @@ import groupBy from 'lodash.groupby';
 import mapValues from 'lodash.mapvalues';
 
 
-function nukeText(nukes = 0) {
-  return `Nukes: ${nukes}`;
+function nukeText(country = '', nukes = 0) {
+  return `${country} Nukes: ${nukes}`;
 }
 
 export function craeteMilitaryChart(store, countryCode, target, margin) {
@@ -59,7 +59,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     .attr('fill', '#000')
     .attr('y', 20)
     .attr('x', margin.left + 5)
-    .text(nukeText());
+    .text(nukeText(countryCode));
 
   function draw() {
     adjustBounds(target, container, margin);
@@ -121,7 +121,10 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
   }
 
   function setNukes(date) {
-    counterTarget.text(nukeText(nukesByCountry.filter(d => d.time < date.getTime()).length));
+    counterTarget.text(nukeText(
+      countryCode,
+      nukesByCountry.filter(d => d.time < date.getTime()).length,
+    ));
   }
 
   return Object.freeze({
