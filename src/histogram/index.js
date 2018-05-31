@@ -46,7 +46,7 @@ export function createHistogram(store, target, margin) {
       .attr('height', d => y(d[0]) - y(d[1]))
       .attr('width', x.bandwidth());
 
-    g.call(d3.axisLeft(y).ticks(4, 's'));
+    g.call(d3.axisLeft(y).tickValues([50, 100, 150]));
   }
 
   return Object.freeze({ draw });
