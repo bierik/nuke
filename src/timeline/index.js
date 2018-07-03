@@ -10,7 +10,8 @@ export function createTimeline(data, target, margin) {
 
   function draw() {
     adjustBounds(target, container, margin);
-    x.range([0, calcRangeWidth(target, margin)]);
+    const width = calcRangeWidth(target, margin);
+    x.range([0, width]);
     g.call(d3.axisBottom(x));
   }
 

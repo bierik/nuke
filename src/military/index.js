@@ -22,7 +22,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     .keys(nukesPerYearCount)
     .map(d => ({ year: d, amount: nukesPerYearCount[d] }));
 
-  const { container } = createContainer(target, margin);
+  const { container, g } = createContainer(target, margin);
 
   const height = 80;
 
@@ -54,7 +54,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     .x(d => xExpenses(new Date(d.year, 0, 1)))
     .y(d => yExpenses(d.militaryExpenditures));
 
-  const counterTarget = container
+  const counterTarget = g
     .append('text')
     .attr('fill', '#000')
     .attr('y', 20)
@@ -69,10 +69,9 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
     xExpenses.range([0, width]);
     xNukes.range([0, width]);
 
-    container.selectAll('g').remove();
+    g.selectAll('g').remove();
 
-    container.append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+    g.append('g')
       .append('path')
       .datum(militaryExpenses)
       .attr('fill', 'none')
@@ -82,8 +81,7 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
       .attr('stroke-width', 1.5)
       .attr('d', lineExpenses);
 
-    container.append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+    g.append('g')
       .selectAll('rect')
       .data(listNukesPerYear)
       .enter()
@@ -95,27 +93,23 @@ export function craeteMilitaryChart(store, countryCode, target, margin) {
       .attr('width', xNukes.bandwidth())
       .attr('height', d => height - yNukes(d.amount || 0));
 
-    container
-      .append('g')
+    g.append('g')
       .attr('class', 'military-expenses-axis')
-      .attr('transform', `translate(${width + margin.left}, ${margin.top})`)
+      .attr('transform', `translate(${width}, 0)`)
       .call(d3.axisRight(yExpenses).ticks(4, 's'));
 
-    container
-      .append('g')
+    g.append('g')
       .attr('class', 'military-expenses-axis')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .call(d3.axisLeft(yNukes).ticks(4, 's').tickFormat(d3.format('d')));
 
-    container
-      .append('g')
+    g.append('g')
       .attr('class', 'military-expenses-axis')
-      .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
+      .attr('transform', `translate(0, ${height})`)
       .call(d3.axisBottom(xExpenses).ticks(5))
       .append('text')
       .attr('fill', '#000')
-      .attr('y', -height + 10)
-      .attr('x', width - 4)
+      .attr('y', -height)
+      .attr('x', width)
       .attr('text-anchor', 'end')
       .text('$');
   }

@@ -108,7 +108,9 @@ text {
   height: calc(100vh - 200px);
 }
 
-
+.progress-container {
+  position: relative;
+}
 
 .histogram-row {
   height: 170px;
@@ -147,10 +149,6 @@ svg {
   height: 100%;
 }
 
-.diagramms {
-  position: relative;
-}
-
 .military-expenses-rect {
   opacity: .4;
 }
@@ -185,10 +183,6 @@ svg {
     opacity: .2;
     height: 100%;
     transition: transform .1s;
-  }
-  &.histogram-progress {
-    top: 20px;
-    bottom: 40px;
   }
 }
 

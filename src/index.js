@@ -24,8 +24,12 @@ import { Store } from '@/api/store';
   const countryCodes = Object.keys(colorMap);
 
 
-  const margin = {
-    top: 0, right: 50, bottom: 0, left: 50,
+  const histogramMargin = {
+    top: 0, right: 20, bottom: 0, left: 30,
+  };
+
+  const militaryMargin = {
+    top: 20, right: 60, bottom: 0, left: 20,
   };
 
   const state = {
@@ -44,21 +48,14 @@ import { Store } from '@/api/store';
 
   // Initialize progressbar
   const timelineProgresses = [];
-  timelineProgresses.push(createProgress(document.querySelector('#histogram-progress'), margin));
-  timelineProgresses.push(createProgress(document.querySelector('#military-progress'), {
-    top: 10,
-    left: 50,
-    bottom: 10,
-    right: 10,
-  }));
+  timelineProgresses.push(createProgress(document.querySelector('#histogram-progress'), histogramMargin));
+  timelineProgresses.push(createProgress(document.querySelector('#military-progress'), militaryMargin));
 
   // Initialize timeline
-  const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), margin);
+  const timeline = createTimeline(store.getNukeData(), document.querySelector('#timeline-axis'), histogramMargin);
 
   // Initialize histogram
-  const histogram = createHistogram(store, document.querySelector('#nukes-per-year'), {
-    top: 20, right: 50, bottom: 0, left: 50,
-  });
+  const histogram = createHistogram(store, document.querySelector('#nukes-per-year'), histogramMargin);
 
   // Initialize legend
   createLegend(document.querySelector('#country-legend'));
@@ -66,9 +63,7 @@ import { Store } from '@/api/store';
   const militaryTargets = document.querySelectorAll('.military-target');
 
   const militaryCharts = countryCodes
-    .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], {
-      top: 10, left: 40, bottom: 10, right: 50,
-    }));
+    .map((c, i) => craeteMilitaryChart(store, c, militaryTargets[i], militaryMargin));
 
   // Initialize simulation
   const simulation = createSimulation(store, (points, progress, now) => {

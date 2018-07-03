@@ -6,7 +6,7 @@ export function createProgress(target, margin) {
     .select(target)
     .append('div')
     .style('margin-left', `${margin.left}px`)
-    .style('width', `calc(100% - ${margin.left + margin.right}px`);
+    .style('width', `calc(100% - ${margin.right}px`);
 
   function set(value) {
     progress

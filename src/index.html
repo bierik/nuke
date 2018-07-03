@@ -1,51 +1,47 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>NUKE</title>
-        <meta name="description" content="">
-        <link rel="icon" href="assets/favicon.ico">
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    </head>
-    <body class="loading">
-        <div class="start-nuke"></div>
-        <div id="country-legend"></div>
-        <main class="main">
-            <div class="row">
-                <section class="col-xs-9">
-                    <section class="row map-row">
-                        <div class="col-xs-12">
-                            <div id="map"></div>
-                        </div>
-                    </section>
-                    <section class="diagramms">
-                        <div id="histogram-progress" class="timeline-progress histogram-progress"></div>
-                        <div class="row histogram-row">
-                            <div class="col-xs-12" id="nukes-per-year"></div>
-                        </div>
-                        <div class="row timeline-row">
-                            <div class="col-xs-12">
-                                <div id="timeline-axis"></div>
-                            </div>
-                        </div>
-                    </section>
-                </section>
-                <aside class="col-xs-3 diagramms">
-                    <div id="military-progress" class="timeline-progress"></div>
-                    <div class="row">
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                        <div class="col-xs-12 military-target"></div>
-                    </div>
-                </aside>
-            </div>
-        </main>
-    </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>NUKE</title>
+  <meta name="description" content="">
+  <link rel="icon" href="assets/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body class="loading">
+  <div class="start-nuke"></div>
+  <div id="country-legend"></div>
+  <main class="main">
+    <div class="row">
+      <section class="col-xs-9">
+        <section class="row map-row">
+          <div class="col-xs-12">
+            <div id="map"></div>
+          </div>
+        </section>
+        <div class="row histogram-row progress-container">
+          <div id="histogram-progress" class="timeline-progress histogram-progress"></div>
+          <div class="col-xs-12" id="nukes-per-year"></div>
+        </div>
+        <div class="row timeline-row">
+          <div class="col-xs-12" id="timeline-axis"></div>
+        </div>
+      </section>
+      <aside class="col-xs-3">
+        <div class="row progress-container">
+          <div id="military-progress" class="col-xs-12 timeline-progress"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+          <div class="col-xs-12 military-target"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
 </html>
